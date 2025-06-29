@@ -5,6 +5,6 @@ import com.xuecheng.base.model.PageResult;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.xuecheng.content.model.po.CourseBase;
 
-public interface coursebaseInfoService {
+public interface CoursebaseInfoService {
     public PageResult<CourseBase>queryCourseBaseInfo(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto);
 }

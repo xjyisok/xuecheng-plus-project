@@ -7,7 +7,7 @@ import com.xuecheng.base.model.PageResult;
 import com.xuecheng.content.mapper.CourseBaseMapper;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.service.coursebaseInfoService;
+import com.xuecheng.content.service.CoursebaseInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class courebaseInfoServiceImpl implements coursebaseInfoService {
+public class CourebaseInfoServiceImpl implements CoursebaseInfoService {
     @Autowired
     private CourseBaseMapper courseBaseMapper;
     @Override
