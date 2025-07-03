@@ -7,8 +7,8 @@ POST http://localhost:63040/content/course
 Content-Type: application/json
 
 {
-  "charge": "201000",
-  "price": 0,
+  "charge": "201001",
+  "price": 2,
   "originalPrice":0,
   "qq": "22333",
   "wechat": "223344",
@@ -17,10 +17,34 @@ Content-Type: application/json
   "mt": "1-1",
   "st": "1-1-1",
   "name": "测试课程103",
-  "pic": "",
+  "pic": "hm",
   "teachmode": "200002",
   "users": "初级人员",
   "tags": "",
   "grade": "204001",
   "description": ""
 }
+### 修改课程
+PUT http://localhost:63040/content/course
+Content-Type: application/json
+
+{ "id": 40,
+  "charge": "201001",
+  "price": 2,
+  "originalPrice":0,
+  "qq": "22333",
+  "wechat": "223344",
+  "phone": "13333333",
+  "validDays": 365,
+  "mt": "1-1",
+  "st": "1-1-1",
+  "name": "测试课程103",
+  "pic": "hm",
+  "teachmode": "200002",
+  "users": "初级人员",
+  "tags": "",
+  "grade": "204001",
+  "description": ""
+}
+###查询课程安排
+GET http://localhost:63040/content/teachplan/74/tree-nodes

@@ -31,7 +31,7 @@ public class CourseMarket implements Serializable {
     /**
      * 现价
      */
-    private Float price;
+    private Integer price;
 
     /**
      * 原价

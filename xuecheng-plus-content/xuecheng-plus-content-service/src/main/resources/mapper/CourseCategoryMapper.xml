@@ -5,7 +5,7 @@
             parameterType="String">
         with recursive t1 as (select *
                               from course_category
-                              where id = #{id}
+                              where id = #{courseId}
                               union all
                               select t.*
                               from course_category t

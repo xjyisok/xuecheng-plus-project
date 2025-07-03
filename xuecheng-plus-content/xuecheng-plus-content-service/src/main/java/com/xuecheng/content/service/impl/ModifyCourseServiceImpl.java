@@ -4,13 +4,12 @@ import com.xuecheng.base.exception.XueChengError;
 import com.xuecheng.content.mapper.CourseBaseMapper;
 import com.xuecheng.content.mapper.CourseCategoryMapper;
 import com.xuecheng.content.mapper.CourseMarketMapper;
-import com.xuecheng.content.model.dto.AddCourseParamDto;
+import com.xuecheng.content.model.dto.ModifyCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseMarketDto;
 import com.xuecheng.content.model.po.CourseBase;
 import com.xuecheng.content.model.po.CourseCategory;
 import com.xuecheng.content.model.po.CourseMarket;
-import com.xuecheng.content.service.AddCourseService;
-import io.swagger.v3.oas.annotations.servers.Server;
+import com.xuecheng.content.service.ModifyCourseService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,66 +18,31 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-public class AddCourseServiceImpl implements AddCourseService {
-    @Autowired
-    CourseMarketMapper courseMarketMapper;
+public class ModifyCourseServiceImpl implements ModifyCourseService {
     @Autowired
     CourseBaseMapper courseBaseMapper;
     @Autowired
-    private CourseCategoryMapper courseCategoryMapper;
-
+    CourseMarketMapper courseMarketMapper;
+    @Autowired
+    CourseCategoryMapper courseCategoryMapper;
     @Override
-    public QueryCourseMarketDto queryCourseMarket(Long companyId, AddCourseParamDto addCourseParamDto) {
-//        if (StringUtils.isBlank(addCourseParamDto.getName())) {
-//            XueChengError.cast("课程名称为空");
-//        }
-//
-//        if (StringUtils.isBlank(addCourseParamDto.getMt())) {
-//            XueChengError.cast("课程分类为空");
-//        }
-//
-//        if (StringUtils.isBlank(addCourseParamDto.getSt())) {
-//            XueChengError.cast("课程分类为空");
-//        }
-//
-//        if (StringUtils.isBlank(addCourseParamDto.getGrade())) {
-//            XueChengError.cast("课程等级为空");
-//        }
-//
-//        if (StringUtils.isBlank(addCourseParamDto.getTeachmode())) {
-//            XueChengError.cast("教育模式为空");
-//        }
-//
-//        if (StringUtils.isBlank(addCourseParamDto.getUsers())) {
-//            XueChengError.cast("适应人群为空");
-//        }
-//
-//        if (StringUtils.isBlank(addCourseParamDto.getCharge())) {
-//            XueChengError.cast("收费规则为空");
-//        }
-        CourseBase courseBaseNew = new CourseBase();
-        BeanUtils.copyProperties(addCourseParamDto, courseBaseNew);
-        courseBaseNew.setCompanyId(companyId);
-        courseBaseNew.setAuditStatus("202002");
-        //设置发布状态
-        courseBaseNew.setStatus("203001");
-        //机构id
-        courseBaseNew.setCompanyId(companyId);
-        //添加时间
-        courseBaseNew.setCreateDate(LocalDateTime.now());
-        int result=courseBaseMapper.insert(courseBaseNew);
-        if(result < 0){
-            XueChengError.cast("课程保存错误");
+    public QueryCourseMarketDto updatecourse(long companyId,ModifyCourseDto dto) {
+        long id = dto.getId();
+        CourseBase courseBase =courseBaseMapper.selectById(id);
+        if(courseBase==null){
+            XueChengError.cast("课程不存在");
         }
-        Long courseId=courseBaseNew.getId();
-        CourseMarket courseMarketNew = new CourseMarket();
-        courseMarketNew.setId(courseId);
-        BeanUtils.copyProperties(addCourseParamDto, courseMarketNew);
-        int resultsavemarker=saveCourseMarket(courseMarketNew);
-        if(resultsavemarker < 0){
-            XueChengError.cast("课程商业状态保存失败");
+        if(!courseBase.getCompanyId().equals(companyId)){
+            XueChengError.cast("只可以修改本公司的课程");
         }
-        return getCourseMarket(courseId);
+        BeanUtils.copyProperties(dto,courseBase);
+        courseBase.setChangeDate(LocalDateTime.now());
+        courseBaseMapper.updateById(courseBase);
+        CourseMarket marketDto = new CourseMarket();
+        BeanUtils.copyProperties(dto,marketDto);
+        marketDto.setId(id);
+        saveCourseMarket(marketDto);
+        return getCourseMarket(id);
     }
     private int saveCourseMarket(CourseMarket courseMarket) {
         if(StringUtils.isBlank(courseMarket.getCharge())){
@@ -117,4 +81,5 @@ public class AddCourseServiceImpl implements AddCourseService {
         return queryCourseMarketDto;
 
     }
+
 }
