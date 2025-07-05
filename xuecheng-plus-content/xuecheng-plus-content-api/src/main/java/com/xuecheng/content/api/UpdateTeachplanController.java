@@ -13,4 +13,16 @@ public class UpdateTeachplanController {
     public void updateTeachplan(@RequestBody SaveTeachplanDto saveTeachplanDto) {
         saveorUpdateTeachplan.saveorupdate(saveTeachplanDto);
     }
+    @DeleteMapping("/teachplan/{id}")
+    public void deleteTeachplan(@PathVariable Integer id) {
+        saveorUpdateTeachplan.deleteTeachplan(id);
+    }
+    @PostMapping("teachplan/moveup/{id}")
+    public void moveup(@PathVariable long id) {
+        saveorUpdateTeachplan.moveupordown(id,0);
+    }
+    @PostMapping("teachplan/movedown/{id}")
+    public void movedown(@PathVariable long id) {
+        saveorUpdateTeachplan.moveupordown(id,1);
+    }
 }

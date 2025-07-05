@@ -1,19 +1,17 @@
 package com.xuecheng.content.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xuecheng.base.exception.XueChengError;
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.mapper.CourseCategoryMapper;
-import com.xuecheng.content.mapper.CourseMarketMapper;
+import com.xuecheng.content.mapper.*;
 import com.xuecheng.content.model.dto.ModifyCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseMarketDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseCategory;
-import com.xuecheng.content.model.po.CourseMarket;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.ModifyCourseService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +23,12 @@ public class ModifyCourseServiceImpl implements ModifyCourseService {
     CourseMarketMapper courseMarketMapper;
     @Autowired
     CourseCategoryMapper courseCategoryMapper;
+    @Autowired
+    TeachplanMapper teachplanMapper;
+    @Autowired
+    TeachplanMediaMapper teachplanMediaMapper;
+    @Autowired
+    CourseTeacherMapper courseTeacherMapper;
     @Override
     public QueryCourseMarketDto updatecourse(long companyId,ModifyCourseDto dto) {
         long id = dto.getId();
@@ -82,4 +86,23 @@ public class ModifyCourseServiceImpl implements ModifyCourseService {
 
     }
 
+    @Override
+    @Transactional
+    public void deletecourse(long courseId) {
+        try {
+            courseBaseMapper.deleteById(courseId);
+            courseMarketMapper.deleteById(courseId);
+            LambdaQueryWrapper<Teachplan> queryWrapper = new LambdaQueryWrapper();
+            queryWrapper.eq(Teachplan::getCourseId, courseId);
+            teachplanMapper.delete(queryWrapper);
+            LambdaQueryWrapper<TeachplanMedia> queryWrapperm = new LambdaQueryWrapper();
+            queryWrapperm.eq(TeachplanMedia::getCourseId, courseId);
+            teachplanMediaMapper.delete(queryWrapperm);
+            LambdaQueryWrapper<CourseTeacher> queryWrappert = new LambdaQueryWrapper();
+            queryWrappert.eq(CourseTeacher::getCourseId, courseId);
+            courseTeacherMapper.delete(queryWrappert);
+        }catch(Exception e){
+            XueChengError.cast("数据库中不存在课程数据");
+        }
+    }
 }

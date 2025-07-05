@@ -5,4 +5,5 @@ import com.xuecheng.content.model.dto.QueryCourseMarketDto;
 
 public interface ModifyCourseService {
     public QueryCourseMarketDto updatecourse(long companyId,ModifyCourseDto modifyCourseDto);
+    public void deletecourse(long courseId);
 }

@@ -48,4 +48,8 @@ public class updateCourseController {
 
         return queryCourseMarketDto;
     }
+    @DeleteMapping("/course/courseId")
+    public void deleteCourseById(@PathVariable Long courseId) {
+        modifyCourseService.deletecourse(courseId);
+    }
 }
