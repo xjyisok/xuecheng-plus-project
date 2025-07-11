@@ -1,0 +1,31 @@
+#微服务配置
+spring:
+#  config:
+#    import: nacos
+  application:
+    name: media-api
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      discovery:
+        namespace: 50d3edac-429d-4661-b0ea-b50688e365d7
+        group: xuecheng-plus-project
+      config:
+        namespace: 50d3edac-429d-4661-b0ea-b50688e365d7
+        group: xuecheng-plus-project
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: media-service-dev.yaml
+            group: xuecheng-plus-project
+            refresh: true
+        shared-configs:
+          - data-id: shared-log.yaml
+            group: xuecheng-plus-project
+            refresh: true
+          - data-id: shared-springdoc.yaml
+            group: xuecheng-plus-project
+            refresh: true
+  profiles:
+    active: dev
+
