@@ -1,8 +1,8 @@
 spring:
   application:
     name: media-service
-#  config:
-#    import: nacos
+  #config:
+  #  import: nacos
   cloud:
     nacos:
       server-addr: 192.168.101.65:8848

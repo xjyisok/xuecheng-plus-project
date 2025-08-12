@@ -2,6 +2,7 @@ package com.xuecheng.media.api;
 
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
+import com.xuecheng.base.model.RestResponse;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
 import com.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.xuecheng.media.model.dto.UploadFileResultDto;
@@ -23,45 +24,79 @@ import java.io.IOException;
  * @date 2022/9/6 11:29
  * @version 1.0
  */
- @Api(value = "媒资文件管理接口",tags = "媒资文件管理接口")
- @RestController
+@Api(value = "媒资文件管理接口",tags = "媒资文件管理接口")
+@RestController
 public class MediaFilesController {
 
 
- @Autowired
- MediaFileService mediaFileService;
+    @Autowired
+    MediaFileService mediaFileService;
 
 
- @ApiOperation("媒资列表查询接口")
- @PostMapping("/files")
- public PageResult<MediaFiles> list(PageParams pageParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto){
-  Long companyId = 1232141425L;
-  return mediaFileService.queryMediaFiles(companyId,pageParams,queryMediaParamsDto);
- }
- @ApiOperation("上传文件")
- @RequestMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
- public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile filedata,@RequestParam(value = "folder",required=false)
- String folder,@RequestParam(value = "objectName",required=false) String objectName) throws IOException {
-  Long companyId = 1232141425L;
-  UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
-  //文件大小
-  uploadFileParamsDto.setFileSize(filedata.getSize());
-  //图片
-  uploadFileParamsDto.setFileType("001001");
-  //文件名称
-  uploadFileParamsDto.setFilename(filedata.getOriginalFilename());//文件名称
-  //文件大小
-  long fileSize = filedata.getSize();
-  uploadFileParamsDto.setFileSize(fileSize);
-  //创建临时文件
-  File tempFile = File.createTempFile("minio", "temp");
-  //上传的文件拷贝到临时文件
-  filedata.transferTo(tempFile);
-  //文件路径
-  String absolutePath = tempFile.getAbsolutePath();
-  //上传文件
-  UploadFileResultDto uploadFileResultDto = mediaFileService.uploadFile(companyId, uploadFileParamsDto, absolutePath);
-
-  return uploadFileResultDto;
+    @ApiOperation("媒资列表查询接口")
+    @PostMapping("/files")
+    public PageResult<MediaFiles> list(PageParams pageParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto){
+        Long companyId = 1232141425L;
+        System.out.println("1111111111111111111111111111111111111111111");
+        System.out.println(pageParams);
+        return mediaFileService.queryMediaFiles(companyId,pageParams,queryMediaParamsDto);
     }
+    @ApiOperation("上传文件")
+    @RequestMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile filedata,@RequestParam(value = "folder",required=false)
+    String folder,@RequestParam(value = "objectName",required=false) String objectName) throws IOException {
+        Long companyId = 1232141425L;
+        UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
+        //文件大小
+        uploadFileParamsDto.setFileSize(filedata.getSize());
+        //图片
+        uploadFileParamsDto.setFileType("001001");
+        //文件名称
+        uploadFileParamsDto.setFilename(filedata.getOriginalFilename());//文件名称
+        //文件大小
+        long fileSize = filedata.getSize();
+        uploadFileParamsDto.setFileSize(fileSize);
+        //创建临时文件
+        File tempFile = File.createTempFile("minio", "temp");
+        //上传的文件拷贝到临时文件
+        filedata.transferTo(tempFile);
+        //文件路径
+        String absolutePath = tempFile.getAbsolutePath();
+        //上传文件
+        UploadFileResultDto uploadFileResultDto = mediaFileService.uploadFile(companyId, uploadFileParamsDto, absolutePath);
+
+        return uploadFileResultDto;
+    }
+    @ApiOperation("文件资源检查")
+    @PostMapping("/upload/checkfile")
+    public RestResponse<Boolean> checkfile(@RequestParam("fileMd5")String filemd5){
+        return mediaFileService.checkfile(filemd5);
+    }
+    @ApiOperation("文件分块资源检查")
+    @PostMapping("/upload/checkchunk")
+    public RestResponse<Boolean> checkchunk(@RequestParam("fileMd5")String filemd5,@RequestParam("chunk")int chunk){
+        return mediaFileService.checkChunk(filemd5,chunk);
+    }
+    @ApiOperation("文件上传结果反馈")
+    @PostMapping("/upload/uploadchunk")
+    public RestResponse<Boolean> uploadchunk(@RequestParam("fileMd5")String filemd5,@RequestParam("chunk")int chunk
+            ,@RequestParam("file")MultipartFile filedata) throws IOException {
+        File tempfile=File.createTempFile("minio","temp");
+        filedata.transferTo(tempfile);
+        String localpath = tempfile.getAbsolutePath();
+        return mediaFileService.uploadchunkfiles(filemd5,chunk,localpath);
+    }
+    @ApiOperation("文件合并以及删除结果反馈")
+    @PostMapping("/upload/mergechunks")
+    public RestResponse<Boolean> mergechunks(@RequestParam("fileMd5")String filemd5,@RequestParam("fileName")String fileName,
+                                             @RequestParam("chunkTotal")int chunk){
+        Long companyId = 1232141425L;
+        UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
+        uploadFileParamsDto.setFilename(fileName);
+        uploadFileParamsDto.setFileType("001002");
+        uploadFileParamsDto.setTags("课程视频");
+        uploadFileParamsDto.setRemark("");
+        return mediaFileService.mergechunk(companyId,filemd5,uploadFileParamsDto,chunk);
+    }
+
 }
