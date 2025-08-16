@@ -98,7 +98,7 @@ public class AddCourseServiceImpl implements AddCourseService {
             return courseMarketMapper.updateById(courseMarketNew);
         }
     }
-    private QueryCourseMarketDto getCourseMarket(long courseId) {
+    public QueryCourseMarketDto getCourseMarket(long courseId) {
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase == null){
             return null;

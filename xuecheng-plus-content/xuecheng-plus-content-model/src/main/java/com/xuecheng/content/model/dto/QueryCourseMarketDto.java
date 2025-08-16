@@ -16,7 +16,7 @@ public class QueryCourseMarketDto extends CourseBase {
     /**
      * 价格
      */
-    private Float price;
+    private Integer price;
 
 
     /**

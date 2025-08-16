@@ -4,6 +4,22 @@ spring:
     url: jdbc:mysql://192.168.101.65:3306/xc402_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
     username: root
     password: mysql
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      discovery:
+        namespace: 50d3edac-429d-4661-b0ea-b50688e365d7
+        group: xuecheng-plus-project
+        username: nacos
+        password: nacos
+      config:
+        namespace: 50d3edac-429d-4661-b0ea-b50688e365d7
+        group: xuecheng-plus-project
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs: # 共享配置
+          - dataId: shared-log.yaml # 共享日志配置
+          - dataId: feign-dev.yaml
 # 日志文件配置路径
 logging:
   config: classpath:log4j2-dev.xml

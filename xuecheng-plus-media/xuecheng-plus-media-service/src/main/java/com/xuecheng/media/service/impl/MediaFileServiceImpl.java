@@ -65,7 +65,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         LambdaQueryWrapper<MediaFiles> queryWrapper = new LambdaQueryWrapper<>();
 
         //分页对象
-        Page<MediaFiles> page = new Page<>(0, 10);
+        Page<MediaFiles> page = new Page<>(0, 40);
         // 查询数据内容获得结果
         Page<MediaFiles> pageResult = mediaFilesMapper.selectPage(page, queryWrapper);
         // 获取数据列表
@@ -202,7 +202,8 @@ public class MediaFileServiceImpl implements MediaFileService {
     private String bucket_Videofiles;
     //@Transactional
     @Override
-    public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath) {
+    public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath
+    ,String objectname) {
         File file = new File(localFilePath);
         if (!file.exists()) {
             XueChengError.cast("文件不存在");
@@ -218,13 +219,15 @@ public class MediaFileServiceImpl implements MediaFileService {
         //文件的默认目录
         String defaultFolderPath = getDefaultFolderPath();
         //存储到minio中的对象名(带目录)
-        String  objectName = defaultFolderPath + fileMd5 + extension;
+        if(objectname==null){
+            objectname = defaultFolderPath + fileMd5 + extension;
+        }
         //将文件上传到minio
-        boolean b = addMediaFilesToMinIO(localFilePath, mimeType, bucket_Files, objectName);
+        boolean b = addMediaFilesToMinIO(localFilePath, mimeType, bucket_Files, objectname);
         //文件大小
         uploadFileParamsDto.setFileSize(file.length());
         //将文件信息存储到数据库
-        MediaFiles mediaFiles =((MediaFileService) AopContext.currentProxy()).addMediaFilesToDb(companyId, fileMd5, uploadFileParamsDto, bucket_Files, objectName);
+        MediaFiles mediaFiles =((MediaFileService) AopContext.currentProxy()).addMediaFilesToDb(companyId, fileMd5, uploadFileParamsDto, bucket_Files, objectname);
         //准备返回数据
         UploadFileResultDto uploadFileResultDto = new UploadFileResultDto();
         BeanUtils.copyProperties(mediaFiles, uploadFileResultDto);
@@ -384,5 +387,8 @@ public class MediaFileServiceImpl implements MediaFileService {
             log.error("清楚分块文件失败,chunkFileFolderPath:{}",getchunkfolder(fileMd5),e);
         }
     }
-
+    @Override
+    public MediaFiles getFileById(String md5){
+        return mediaFilesMapper.selectById(md5);
+    }
 }

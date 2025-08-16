@@ -36,7 +36,7 @@ public interface MediaFileService {
   * @param localFilePath 文件磁盘路径
   * @return 文件信息
   */
- public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath);
+ public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath,String objectname);
  //检查文件是否存在
  public RestResponse<Boolean> checkfile(String fileMd5);
  public RestResponse<Boolean> checkChunk(String fileMd5, int chunkIndex);
@@ -45,4 +45,5 @@ public interface MediaFileService {
  public RestResponse<Boolean> mergechunk(Long companyId,String fileMd5,UploadFileParamsDto uploadFileParamsDto,int chunkTotal);
  public File downloadFile(String filepath, String bucket);
  public boolean addMediaFilesToMinIO(String localFilePath,String mimeType,String bucket, String objectName);
+ public MediaFiles getFileById(String mediaId);
 }
