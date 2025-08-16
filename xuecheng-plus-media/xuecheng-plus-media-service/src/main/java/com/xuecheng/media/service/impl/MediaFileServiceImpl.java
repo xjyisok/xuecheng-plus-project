@@ -65,7 +65,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         LambdaQueryWrapper<MediaFiles> queryWrapper = new LambdaQueryWrapper<>();
 
         //分页对象
-        Page<MediaFiles> page = new Page<>(0, 10);
+        Page<MediaFiles> page = new Page<>(0, 40);
         // 查询数据内容获得结果
         Page<MediaFiles> pageResult = mediaFilesMapper.selectPage(page, queryWrapper);
         // 获取数据列表
@@ -384,5 +384,8 @@ public class MediaFileServiceImpl implements MediaFileService {
             log.error("清楚分块文件失败,chunkFileFolderPath:{}",getchunkfolder(fileMd5),e);
         }
     }
-
+    @Override
+    public MediaFiles getFileById(String md5){
+        return mediaFilesMapper.selectById(md5);
+    }
 }

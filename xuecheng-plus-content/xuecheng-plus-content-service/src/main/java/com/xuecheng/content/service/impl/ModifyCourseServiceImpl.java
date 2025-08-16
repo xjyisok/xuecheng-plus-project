@@ -61,8 +61,11 @@ public class ModifyCourseServiceImpl implements ModifyCourseService {
             return courseMarketMapper.insert(courseMarket);
         }
         else{
+            System.out.println(courseMarket.getPrice());
+            System.out.println(courseMarketNew.getPrice());
             BeanUtils.copyProperties(courseMarket, courseMarketNew);
             courseMarketNew.setId(courseMarket.getId());
+            System.out.println(courseMarketNew.getPrice());
             return courseMarketMapper.updateById(courseMarketNew);
         }
     }
@@ -72,11 +75,13 @@ public class ModifyCourseServiceImpl implements ModifyCourseService {
             return null;
         }
         CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
+        System.out.println(courseMarket.getPrice());
         QueryCourseMarketDto queryCourseMarketDto = new QueryCourseMarketDto();
         BeanUtils.copyProperties(courseBase, queryCourseMarketDto);
         if(courseMarket!=null){
             BeanUtils.copyProperties(courseMarket, queryCourseMarketDto);
         }
+        System.out.println(queryCourseMarketDto.getPrice());
         CourseCategory courseCategoryBySt = courseCategoryMapper.selectById(courseBase.getSt());
         queryCourseMarketDto.setStName(courseCategoryBySt.getName());
         CourseCategory courseCategoryByMt = courseCategoryMapper.selectById(courseBase.getMt());

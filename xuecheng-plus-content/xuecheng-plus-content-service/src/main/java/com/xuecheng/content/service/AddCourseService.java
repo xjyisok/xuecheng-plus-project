@@ -5,4 +5,5 @@ import com.xuecheng.content.model.dto.QueryCourseMarketDto;
 
 public interface AddCourseService {
     public QueryCourseMarketDto queryCourseMarket(Long companyId, AddCourseParamDto addCourseParamDto);
+    public QueryCourseMarketDto getCourseMarket(long courseId);
 }
