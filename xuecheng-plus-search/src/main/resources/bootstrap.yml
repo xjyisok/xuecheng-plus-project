@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: search
+  cloud:
+    nacos:
+      server-addr: 192.168.101.65:8848
+      discovery:
+        namespace: 50d3edac-429d-4661-b0ea-b50688e365d7
+        group: xuecheng-plus-project
+      config:
+        namespace: 50d3edac-429d-4661-b0ea-b50688e365d7
+        group: xuecheng-plus-project
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: shared-springdoc.yaml
+            group: xuecheng-plus-project
+            refresh: true
+#          - data-id: shared-log.yaml
+#            group: xuecheng-plus-project
+#            refresh: true
+          - data-id: search-dev.yaml
+            group: xuecheng-plus-project
+            refresh: true
+  profiles:
+    active: dev
+logging:
+  config: classpath:log4j2-dev.xml
+#  level:
+#    root: INFO
+#    org.springframework: INFO
+#    com.alibaba: INFO
