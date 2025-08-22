@@ -29,6 +29,7 @@ spring:
         shared-configs: # 共享配置
           - dataId: shared-log.yaml # 共享日志配置
           - dataId: shared-springdoc.yaml
+          - dataId: feign-dev.yaml
 
 # 日志文件配置路径
 #logging:
